@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .dashboard {
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .content {
+            padding: 20px;
+        }
+        .current-datetime {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .card {
+            flex: 1 1 calc(33% - 30px);
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .card a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .card a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        // Function to update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const dateTimeString = now.toLocaleString();
+            document.getElementById('currentDateTime').textContent = `Current Date & Time: ${dateTimeString}`;
+        }
+
+        // Update date and time every second
+        setInterval(updateDateTime, 1000);
+
+        // Call immediately to show date and time on page load
+        window.onload = updateDateTime;
+    </script>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>Administrator Dashboard</h1>
+            <button onclick="location.href='index.html'" style="background-color: #ff4d4d; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">Logout</button>
+            
+        </div>
+        <div class="content">
+            <div class="current-datetime" id="currentDateTime">Current Date & Time:</div>
+            <div class="actions">
+                <div class="card">
+                    <h3>Manage Faculty Data</h3>
+                    <a href="facData.html">View Faculty Records</a>
+                </div>
+                <div class="card">
+                    <h3>Manage Student Data</h3>
+                    <a href="stuData.html">View Student Records</a>
+                </div>
+            </div>
+        </div>
+    </div>  
+
+</body>
+</html>
