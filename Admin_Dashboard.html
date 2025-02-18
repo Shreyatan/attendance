@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+        }
+
+        .login-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-form h2 {
+            margin-bottom: 1.5rem;
+            color: #1a73e8;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #1a73e8;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #1557b0;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .navbar {
+            background-color: #1a73e8;
+            padding: 1rem;
+            color: white;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table th, .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin-top: 0.5rem;
+        }
+
+        .add-form {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="loginContainer">
+        <form class="login-form" id="loginForm">
+            <h2>Admin Login</h2>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit">Login</button>
+            <div class="error-message" id="loginError"></div>
+        </form>
+    </div>
+
+    <div class="dashboard" id="dashboard">
+        <nav class="navbar">
+            <div class="navbar-content">
+                <h2>Admin Dashboard</h2>
+                <div class="nav-links">
+                    <a onclick="showFacultyData()">Faculty Data</a>
+                    <a onclick="showStudentData()">Student Data</a>
+                    <a onclick="logout()">Logout</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="content">
+            <div id="facultySection" style="display: none;">
+                <h2>Faculty Management</h2>
+                <div class="add-form">
+                    <h3>Add New Faculty</h3>
+                    <div class="form-row">
+                        <input type="text" id="facultyName" placeholder="Name">
+                        <input type="text" id="facultyDepartment" placeholder="Department">
+                        <input type="email" id="facultyEmail" placeholder="Email">
+                        <button onclick="addFaculty()">Add Faculty</button>
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="facultyTableBody"></tbody>
+                </table>
+            </div>
+
+            <div id="studentSection" style="display: none;">
+                <h2>Student Management</h2>
+                <div class="add-form">
+                    <h3>Add New Student</h3>
+                    <div class="form-row">
+                        <input type="text" id="studentName" placeholder="Name">
+                        <input type="text" id="studentCourse" placeholder="Course">
+                        <input type="email" id="studentEmail" placeholder="Email">
+                        <button onclick="addStudent()">Add Student</button>
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Course</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize sample data
+        let facultyData = [
+            { id: 1, name: 'Dr. John Smith', department: 'Computer Science', email: 'john@example.com' },
+            { id: 2, name: 'Dr. Sarah Johnson', department: 'Mathematics', email: 'sarah@example.com' }
+        ];
+
+        let studentData = [
+            { id: 1, name: 'Alice Brown', course: 'Computer Science', email: 'alice@example.com' },
+            { id: 2, name: 'Bob Wilson', course: 'Mathematics', email: 'bob@example.com' }
+        ];
+
+        // Login handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (username === 'admin' && password === 'admin123') {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                showFacultyData(); // Show faculty data by default
+            } else {
+                document.getElementById('loginError').textContent = 'Invalid credentials. Please try again.';
+            }
+        });
+
+        // Navigation functions
+        function showFacultyData() {
+            document.getElementById('facultySection').style.display = 'block';
+            document.getElementById('studentSection').style.display = 'none';
+            renderFacultyTable();
+        }
+
+        function showStudentData() {
+            document.getElementById('facultySection').style.display = 'none';
+            document.getElementById('studentSection').style.display = 'block';
+            renderStudentTable();
+        }
+
+        function logout() {
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginError').textContent = '';
+        }
+
+        // Faculty management functions
+        function renderFacultyTable() {
+            const tbody = document.getElementById('facultyTableBody');
+            tbody.innerHTML = facultyData.map(faculty => `
+                <tr>
+                    <td>${faculty.id}</td>
+                    <td>${faculty.name}</td>
+                    <td>${faculty.department}</td>
+                    <td>${faculty.email}</td>
+                    <td>
+                        <button onclick="deleteFaculty(${faculty.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addFaculty() {
+            const name = document.getElementById('facultyName').value;
+            const department = document.getElementById('facultyDepartment').value;
+            const email = document.getElementById('facultyEmail').value;
+
+            if (name && department && email) {
+                const newFaculty = {
+                    id: facultyData.length + 1,
+                    name,
+                    department,
+                    email
+                };
+                facultyData.push(newFaculty);
+                renderFacultyTable();
+
+                // Clear form
+                document.getElementById('facultyName').value = '';
+                document.getElementById('facultyDepartment').value = '';
+                document.getElementById('facultyEmail').value = '';
+            }
+        }
+
+        function deleteFaculty(id) {
+            facultyData = facultyData.filter(faculty => faculty.id !== id);
+            renderFacultyTable();
+        }
+
+        // Student management functions
+        function renderStudentTable() {
+            const tbody = document.getElementById('studentTableBody');
+            tbody.innerHTML = studentData.map(student => `
+                <tr>
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.course}</td>
+                    <td>${student.email}</td>
+                    <td>
+                        <button onclick="deleteStudent(${student.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addStudent() {
+            const name = document.getElementById('studentName').value;
+            const course = document.getElementById('studentCourse').value;
+            const email = document.getElementById('studentEmail').value;
+
+            if (name && course && email) {
+                const newStudent = {
+                    id: studentData.length + 1,
+                    name,
+                    course,
+                    email
+                };
+                studentData.push(newStudent);
+                renderStudentTable();
+
+                // Clear form
+                document.getElementById('studentName').value = '';
+                document.getElementById('studentCourse').value = '';
+                document.getElementById('studentEmail').value = '';
+            }
+        }
+
+        function deleteStudent(id) {
+            studentData = studentData.filter(student => student.id !== id);
+            renderStudentTable();
+        }
+    </script>
+</body>
+</html>

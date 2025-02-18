@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+        }
+
+        .container {
+            align-self: center;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .login-form {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #1a73e8;
+            margin-bottom: 20px;
+            align-self: center;
+        }
+
+        input {
+            width: 60%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #1557b0;
+        }
+
+        .error-message {
+            color: #d93025;
+            margin-top: 10px;
+            display: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #logoutBtn {
+            background: #dc3545;
+        }
+
+        #logoutBtn:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Form -->
+        <div class="login-form" id="loginForm">
+            <h1>Student Login</h1>
+            <input type="text" id="collegeId" placeholder="Enter College ID" required>
+            <button onclick="login()">Login</button>
+            <p class="error-message" id="errorMessage">Invalid College ID. Please try again.</p>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="welcome-header">
+                <h2>Welcome, <span id="studentName"></span></h2>
+                <button id="logoutBtn" onclick="logout()">Logout</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Total Classes</th>
+                        <th>Classes Attended</th>
+                        <th>Attendance %</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceData">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Simulated student database
+        const studentDatabase = {
+            'ST101': {
+                name: 'John Doe',
+                attendance: [
+                    { subject: 'Mathematics', total: 50, attended: 45 },
+                    { subject: 'Physics', total: 45, attended: 40 },
+                    { subject: 'Chemistry', total: 48, attended: 44 },
+                    { subject: 'Computer Science', total: 52, attended: 48 }
+                ]
+            },
+            'ST102': {
+                name: 'Jane Smith',
+                attendance: [
+                    { subject: 'Mathematics', total: 50, attended: 48 },
+                    { subject: 'Physics', total: 45, attended: 42 },
+                    { subject: 'Chemistry', total: 48, attended: 45 },
+                    { subject: 'Computer Science', total: 52, attended: 50 }
+                ]
+            }
+        };
+
+        function login() {
+            const collegeId = document.getElementById('collegeId').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const loginForm = document.getElementById('loginForm');
+            const dashboard = document.getElementById('dashboard');
+            
+            if (studentDatabase[collegeId]) {
+                // Successful login
+                errorMessage.style.display = 'none';
+                loginForm.style.display = 'none';
+                dashboard.style.display = 'block';
+                
+                // Display student information
+                displayStudentInfo(collegeId);
+            } else {
+                // Failed login
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        function displayStudentInfo(collegeId) {
+            const student = studentDatabase[collegeId];
+            document.getElementById('studentName').textContent = student.name;
+            
+            const attendanceTable = document.getElementById('attendanceData');
+            attendanceTable.innerHTML = '';
+            
+            student.attendance.forEach(subject => {
+                const attendancePercentage = ((subject.attended / subject.total) * 100).toFixed(2);
+                const row = `
+                    <tr>
+                        <td>${subject.subject}</td>
+                        <td>${subject.total}</td>
+                        <td>${subject.attended}</td>
+                        <td>${attendancePercentage}%</td>
+                    </tr>
+                `;
+                attendanceTable.innerHTML += row;
+            });
+        }
+
+        function logout() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('collegeId').value = '';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
